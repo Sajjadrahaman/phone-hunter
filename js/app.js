@@ -13,20 +13,20 @@ const displayPhones = (phones, dataLimit) => {
 
     // display Ten-Phones or all-phones by condition
     const showAll = document.getElementById('show-all');
-    if(dataLimit && phones.length > 10){
+    if (dataLimit && phones.length > 10) {
         phones = phones.slice(0, 10);
         showAll.classList.remove('d-none');
     }
-    else{
+    else {
         showAll.classList.add('d-none');
     }
 
     // display No-Phones Found Message
     const warningNoPhone = document.getElementById('warning-Message');
-    if(phones.length === 0){
+    if (phones.length === 0) {
         warningNoPhone.classList.remove('d-none');
     }
-    else{
+    else {
         warningNoPhone.classList.add('d-none');
     }
 
@@ -41,6 +41,7 @@ const displayPhones = (phones, dataLimit) => {
                 <div class="card-body">
                     <h5 class="card-title">${phone.phone_name}</h5>
                     <p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text since the 1500s.</p>
+                    <button onclick="phoneDetails('${phone.slug}')" href="#" class="btn btn-primary">Show Details</button>
                 </div>
             </div>
         `;
@@ -52,7 +53,7 @@ const displayPhones = (phones, dataLimit) => {
 }
 
 // used common function for searchButton & ShowAll button
-const processSearch = (dataLimit) =>{
+const processSearch = (dataLimit) => {
     toggleSpinner(true);
     const searchField = document.getElementById('search-field');
     const searchText = searchField.value;
@@ -61,25 +62,43 @@ const processSearch = (dataLimit) =>{
 }
 
 //handle search-button clicked
-document.getElementById('btn-search').addEventListener('click', function(){
+document.getElementById('btn-search').addEventListener('click', function () {
     /*-----Spin Loader Start here-------*/
     processSearch(10);
 })
+// input field enter key handler
+document.getElementById('search-field').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        processSearch(10);
+    }
+});
 
 // Spin Loader Data here -------
 const toggleSpinner = isLoading => {
     const spinLoader = document.getElementById('spin-loader');
-    if(isLoading){
+    if (isLoading) {
         spinLoader.classList.remove('d-none');
     }
-    else{
+    else {
         spinLoader.classList.add('d-none');
     }
 }
 
 // not the best way to show all 
-document.getElementById('btn-show-all').addEventListener('click', function(){
+document.getElementById('btn-show-all').addEventListener('click', function () {
     processSearch();
 })
+
+// phone Details information
+const phoneDetails = async (id) => {
+    const url = `https://openapi.programming-hero.com/api/phone/${id}`;
+    const res = await fetch(url)
+    const data = await res.json()
+    displayPhoneDetails(data.data)
+}
+
+const displayPhoneDetails = (details) => {
+    console.log(details);
+}
 
 // loadPhones('apple');
