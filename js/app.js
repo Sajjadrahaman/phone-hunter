@@ -1,29 +1,38 @@
 // fetching promise data from the url
-const loadPhones = async (searchText) => {
+const loadPhones = async (searchText, dataLimit) => {
     const url = `https://openapi.programming-hero.com/api/phones?search=${searchText}`
     const res = await fetch(url);
     const data = await res.json();
-    displayPhones(data.data);
+    displayPhones(data.data, dataLimit);
 }
 
 // display url phones data
-const displayPhones = phones => {
+const displayPhones = (phones, dataLimit) => {
     const phonesContainer = document.getElementById('phonesContainer');
     phonesContainer.textContent = '';
-    // display 22 phones only
-    phones = phones.slice(0,22);
+
+    // display Ten-Phones or all-phones by condition
+    const showAll = document.getElementById('show-all');
+    if(dataLimit && phones.length > 10){
+        phones = phones.slice(0, 10);
+        showAll.classList.remove('d-none');
+    }
+    else{
+        showAll.classList.add('d-none');
+    }
 
     // display No-Phones Found Message
     const warningNoPhone = document.getElementById('warning-Message');
     if(phones.length === 0){
         warningNoPhone.classList.remove('d-none');
-    }else{
+    }
+    else{
         warningNoPhone.classList.add('d-none');
     }
 
     // display All Phones
     phones.forEach(phone => {
-        console.log(phone);
+        // console.log(phone);
         const phonesDiv = document.createElement('div');
         phonesDiv.classList.add('col');
         phonesDiv.innerHTML = `
@@ -42,14 +51,19 @@ const displayPhones = phones => {
 
 }
 
-//handle search-button clicked
-document.getElementById('btn-search').addEventListener('click', function(){
-    /*-----Spin Loader Start here-------*/
+// used common function for searchButton & ShowAll button
+const processSearch = (dataLimit) =>{
     toggleSpinner(true);
     const searchField = document.getElementById('search-field');
     const searchText = searchField.value;
-    searchField.value = '';
-    loadPhones(searchText);
+    // searchField.value = '';
+    loadPhones(searchText, dataLimit);
+}
+
+//handle search-button clicked
+document.getElementById('btn-search').addEventListener('click', function(){
+    /*-----Spin Loader Start here-------*/
+    processSearch(10);
 })
 
 // Spin Loader Data here -------
@@ -61,6 +75,11 @@ const toggleSpinner = isLoading => {
     else{
         spinLoader.classList.add('d-none');
     }
-};
+}
 
-// loadPhones();
+// not the best way to show all 
+document.getElementById('btn-show-all').addEventListener('click', function(){
+    processSearch();
+})
+
+// loadPhones('apple');
