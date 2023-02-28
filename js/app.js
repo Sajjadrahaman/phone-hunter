@@ -123,7 +123,7 @@ const phoneDetails = async (id) => {
 }
 
 const displayPhoneDetails = (details) => {
-    console.log(details);
+    // console.log(details);
     const modalTitle = document.getElementById('phoneDetailsModalLabel');
     modalTitle.innerText = details.name;
     const detailsPhone = document.getElementById('phone-details');
